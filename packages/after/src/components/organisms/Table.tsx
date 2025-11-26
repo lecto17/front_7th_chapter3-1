@@ -204,18 +204,13 @@ export const Table: React.FC<TableProps> = ({
   return (
     <div className="table-container">
       {searchable && (
-        <div style={{ marginBottom: '16px' }}>
+        <div className="mb-4">
           <input
             type="text"
             placeholder="검색..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: '8px 12px',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              width: '300px',
-            }}
+            className="px-3 py-2 border border-border rounded bg-card text-foreground w-[300px]"
           />
         </div>
       )}
@@ -257,38 +252,21 @@ export const Table: React.FC<TableProps> = ({
       </table>
 
       {totalPages > 1 && (
-        <div style={{
-          marginTop: '16px',
-          display: 'flex',
-          gap: '8px',
-          justifyContent: 'center',
-        }}>
+        <div className="mt-4 flex gap-2 justify-center">
           <button
             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            style={{
-              padding: '6px 12px',
-              border: '1px solid #ddd',
-              background: 'white',
-              borderRadius: '4px',
-              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-            }}
+            className="px-3 py-1.5 border border-border bg-card text-foreground rounded cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           >
             이전
           </button>
-          <span style={{ padding: '6px 12px' }}>
+          <span className="px-3 py-1.5 text-foreground">
             {currentPage} / {totalPages}
           </span>
           <button
             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            style={{
-              padding: '6px 12px',
-              border: '1px solid #ddd',
-              background: 'white',
-              borderRadius: '4px',
-              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-            }}
+            className="px-3 py-1.5 border border-border bg-card text-foreground rounded cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           >
             다음
           </button>

@@ -6,12 +6,14 @@ import { userService } from '../services/userService';
 import { postService } from '../services/postService';
 import type { User } from '../services/userService';
 import type { Post } from '../services/postService';
+import { useTheme } from '../contexts/ThemeContext';
 import '../styles/components.css';
 
 type EntityType = 'user' | 'post';
 type Entity = User | Post;
 
 export const ManagementPage: React.FC = () => {
+  const { theme } = useTheme();
   const [entityType, setEntityType] = useState<EntityType>('post');
   const [data, setData] = useState<Entity[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -222,74 +224,50 @@ export const ManagementPage: React.FC = () => {
   const stats = getStats();
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f0f0f0' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-        <div style={{ marginBottom: '20px' }}>
-          <h1 style={{
-            fontSize: '24px',
-            fontWeight: 'bold',
-            marginBottom: '5px',
-            color: '#333'
-          }}>
+    <div className="bg-muted py-5">
+      <div className="max-w-7xl mx-auto px-5">
+        <div className="mb-5">
+          <h1 className="text-2xl font-bold mb-1 text-foreground">
             관리 시스템
           </h1>
-          <p style={{ color: '#666', fontSize: '14px' }}>
+          <p className="text-muted-foreground text-sm">
             사용자와 게시글을 관리하세요
           </p>
         </div>
 
-        <div style={{
-          background: 'white',
-          border: '1px solid #ddd',
-          padding: '10px'
-        }}>
-          <div style={{
-            marginBottom: '15px',
-            borderBottom: '2px solid #ccc',
-            paddingBottom: '5px'
-          }}>
+        <div className="bg-card border border-border p-2.5">
+          <div className="mb-4 border-b-2 border-border pb-1.5">
             <button
               onClick={() => setEntityType('post')}
-              style={{
-                padding: '8px 16px',
-                marginRight: '5px',
-                fontSize: '14px',
-                fontWeight: entityType === 'post' ? 'bold' : 'normal',
-                border: '1px solid #999',
-                background: entityType === 'post' ? '#1976d2' : '#f5f5f5',
-                color: entityType === 'post' ? 'white' : '#333',
-                cursor: 'pointer',
-                borderRadius: '3px'
-              }}
+              className={`px-4 py-2 mr-1.5 text-sm border rounded cursor-pointer ${
+                entityType === 'post'
+                  ? 'font-bold bg-primary text-primary-foreground border-primary'
+                  : 'font-normal bg-secondary text-secondary-foreground border-border'
+              }`}
             >
               게시글
             </button>
             <button
               onClick={() => setEntityType('user')}
-              style={{
-                padding: '8px 16px',
-                fontSize: '14px',
-                fontWeight: entityType === 'user' ? 'bold' : 'normal',
-                border: '1px solid #999',
-                background: entityType === 'user' ? '#1976d2' : '#f5f5f5',
-                color: entityType === 'user' ? 'white' : '#333',
-                cursor: 'pointer',
-                borderRadius: '3px'
-              }}
+              className={`px-4 py-2 text-sm border rounded cursor-pointer ${
+                entityType === 'user'
+                  ? 'font-bold bg-primary text-primary-foreground border-primary'
+                  : 'font-normal bg-secondary text-secondary-foreground border-border'
+              }`}
             >
               사용자
             </button>
           </div>
 
           <div>
-            <div style={{ marginBottom: '15px', textAlign: 'right' }}>
+            <div className="mb-4 text-right">
               <Button variant="primary" size="md" onClick={() => setIsCreateModalOpen(true)}>
                 새로 만들기
               </Button>
             </div>
 
             {showSuccessAlert && (
-              <div style={{ marginBottom: '10px' }}>
+              <div className="mb-2.5">
                 <Alert
                   variant="success"
                   title="성공"
@@ -301,7 +279,7 @@ export const ManagementPage: React.FC = () => {
             )}
 
             {showErrorAlert && (
-              <div style={{ marginBottom: '10px' }}>
+              <div className="mb-2.5">
                 <Alert
                   variant="error"
                   title="오류"
@@ -312,64 +290,59 @@ export const ManagementPage: React.FC = () => {
               </div>
             )}
 
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-              gap: '10px',
-              marginBottom: '15px'
-            }}>
-              <div style={{
-                padding: '12px 15px',
-                background: '#e3f2fd',
-                border: '1px solid #90caf9',
-                borderRadius: '3px'
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(130px,1fr))] gap-2.5 mb-4">
+              <div className="p-3 rounded" style={{
+                backgroundColor: theme === 'dark' ? '#1e3a5f' : '#e3f2fd',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: theme === 'dark' ? '#2563eb' : '#90caf9'
               }}>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>전체</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#1976d2' }}>{stats.total}</div>
+                <div className="text-xs mb-1" style={{ color: theme === 'dark' ? '#94a3b8' : '#666' }}>전체</div>
+                <div className="text-2xl font-bold" style={{ color: theme === 'dark' ? '#60a5fa' : '#1976d2' }}>{stats.total}</div>
               </div>
 
-              <div style={{
-                padding: '12px 15px',
-                background: '#e8f5e9',
-                border: '1px solid #81c784',
-                borderRadius: '3px'
+              <div className="p-3 rounded" style={{
+                backgroundColor: theme === 'dark' ? '#1e4620' : '#e8f5e9',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: theme === 'dark' ? '#22c55e' : '#81c784'
               }}>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>{stats.stat1.label}</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#388e3c' }}>{stats.stat1.value}</div>
+                <div className="text-xs mb-1" style={{ color: theme === 'dark' ? '#94a3b8' : '#666' }}>{stats.stat1.label}</div>
+                <div className="text-2xl font-bold" style={{ color: theme === 'dark' ? '#4ade80' : stats.stat1.color }}>{stats.stat1.value}</div>
               </div>
 
-              <div style={{
-                padding: '12px 15px',
-                background: '#fff3e0',
-                border: '1px solid #ffb74d',
-                borderRadius: '3px'
+              <div className="p-3 rounded" style={{
+                backgroundColor: theme === 'dark' ? '#4a3410' : '#fff3e0',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: theme === 'dark' ? '#f59e0b' : '#ffb74d'
               }}>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>{stats.stat2.label}</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#f57c00' }}>{stats.stat2.value}</div>
+                <div className="text-xs mb-1" style={{ color: theme === 'dark' ? '#94a3b8' : '#666' }}>{stats.stat2.label}</div>
+                <div className="text-2xl font-bold" style={{ color: theme === 'dark' ? '#fbbf24' : stats.stat2.color }}>{stats.stat2.value}</div>
               </div>
 
-              <div style={{
-                padding: '12px 15px',
-                background: '#ffebee',
-                border: '1px solid #e57373',
-                borderRadius: '3px'
+              <div className="p-3 rounded" style={{
+                backgroundColor: theme === 'dark' ? '#4a1e3a' : '#fce4ec',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: theme === 'dark' ? '#ec4899' : '#f48fb1'
               }}>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>{stats.stat3.label}</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d32f2f' }}>{stats.stat3.value}</div>
+                <div className="text-xs mb-1" style={{ color: theme === 'dark' ? '#94a3b8' : '#666' }}>{stats.stat3.label}</div>
+                <div className="text-2xl font-bold" style={{ color: theme === 'dark' ? '#f472b6' : stats.stat3.color }}>{stats.stat3.value}</div>
               </div>
 
-              <div style={{
-                padding: '12px 15px',
-                background: '#f5f5f5',
-                border: '1px solid #bdbdbd',
-                borderRadius: '3px'
+              <div className="p-3 rounded" style={{
+                backgroundColor: theme === 'dark' ? '#2d2d2d' : '#f5f5f5',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: theme === 'dark' ? '#525252' : '#e0e0e0'
               }}>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>{stats.stat4.label}</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#424242' }}>{stats.stat4.value}</div>
+                <div className="text-xs mb-1" style={{ color: theme === 'dark' ? '#94a3b8' : '#666' }}>{stats.stat4.label}</div>
+                <div className="text-2xl font-bold" style={{ color: theme === 'dark' ? '#a3a3a3' : stats.stat4.color }}>{stats.stat4.value}</div>
               </div>
             </div>
 
-            <div style={{ border: '1px solid #ddd', background: 'white', overflow: 'auto' }}>
+            <div className="border border-border bg-card overflow-auto">
               <Table
                 columns={renderTableColumns()}
                 data={data}
