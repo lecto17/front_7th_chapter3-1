@@ -1,29 +1,39 @@
 :root {
+  /* ========================================
+     COLOR PALETTE
+     ======================================== */
+
+  /* Blue */
   --blue-50: #e3f2fd;
   --blue-200: #90caf9;
   --blue-600: #1976d2;
   --blue-700: #1565c0;
   --blue-900: #0d47a1;
 
+  /* Green */
   --green-50: #e8f5e9;
   --green-200: #81c784;
   --green-600: #388e3c;
   --green-700: #2e7d32;
   --green-900: #1b5e20;
 
-  --orange-50: #fff3e0;
-  --orange-200: #ffb74d;
-  --orange-600: #f57c00;
-  --orange-900: #e65100;
-
+  /* Red */
   --red-50: #ffebee;
   --red-200: #e57373;
   --red-600: #d32f2f;
   --red-700: #c62828;
   --red-900: #b71c1c;
 
+  /* Orange */
+  --orange-50: #fff3e0;
+  --orange-200: #ffb74d;
+  --orange-600: #f57c00;
+  --orange-900: #e65100;
+
+  /* Cyan */
   --cyan-600: #0288d1;
 
+  /* Gray */
   --gray-50: #fafafa;
   --gray-100: #f5f5f5;
   --gray-200: #e0e0e0;
@@ -36,4 +46,132 @@
   --gray-900: #121212;
 
   --white: #ffffff;
+  --black: #000000;
+
+  /* ========================================
+     TYPOGRAPHY
+     ======================================== */
+
+  /* Font Family */
+  --font-sans: "Roboto", "Helvetica", "Arial", sans-serif;
+  --font-mono: "Courier New", monospace;
+
+  /* Font Size - px values from before package */
+  --font-size-xs: 0.625rem; /* 10px - checkbox checkmark */
+  --font-size-sm: 0.75rem; /* 12px - helper text, hints */
+  --font-size-base: 0.875rem; /* 14px - body text, inputs */
+  --font-size-md: 0.9375rem; /* 15px - alert title, buttons */
+  --font-size-lg: 1rem; /* 16px - textarea */
+  --font-size-xl: 1.125rem; /* 18px - card title */
+  --font-size-2xl: 1.25rem; /* 20px - alert icon, modal close */
+  --font-size-3xl: 1.75rem; /* 28px - modal close */
+
+  /* Font Weight */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line Height */
+  --line-height-tight: 1;
+  --line-height-snug: 1.1876;
+  --line-height-normal: 1.4;
+  --line-height-relaxed: 1.43;
+  --line-height-loose: 1.5;
+  --line-height-extra-loose: 1.6;
+
+  /* ========================================
+     SPACING
+     ======================================== */
+
+  --spacing-0: 0;
+  --spacing-1: 0.25rem; /* 4px */
+  --spacing-2: 0.5rem; /* 8px */
+  --spacing-3: 0.75rem; /* 12px */
+  --spacing-4: 1rem; /* 16px */
+  --spacing-5: 1.25rem; /* 20px */
+  --spacing-6: 1.5rem; /* 24px */
+  --spacing-8: 2rem; /* 32px */
+  --spacing-10: 2.5rem; /* 40px */
+  --spacing-12: 3rem; /* 48px */
+
+  /* ========================================
+     BORDER RADIUS
+     ======================================== */
+
+  --radius-none: 0;
+  --radius-sm: 0.125rem; /* 2px - checkbox */
+  --radius-base: 0.1875rem; /* 3px - buttons, badges, alerts */
+  --radius-md: 0.25rem; /* 4px - cards, modals, textarea */
+  --radius-lg: 0.625rem; /* 10px - badge pill */
+  --radius-xl: 1rem; /* 16px */
+  --radius-full: 9999px; /* circle - close button */
+
+  /* ========================================
+     SHADOWS
+     ======================================== */
+
+  /* Card Default */
+  --shadow-sm: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+
+  /* Card Elevated */
+  --shadow-md: 0px 2px 4px -1px rgba(0, 0, 0, 0.12),
+    0px 1px 2px 0px rgba(0, 0, 0, 0.08), 0px 1px 4px 0px rgba(0, 0, 0, 0.08);
+
+  /* Modal */
+  --shadow-lg: 0px 11px 15px -7px rgba(0, 0, 0, 0.2),
+    0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+
+  /* Extra Large (for future use) */
+  --shadow-xl: 0px 24px 48px -12px rgba(0, 0, 0, 0.25);
+
+  --shadow-none: none;
+
+  /* ========================================
+     BREAKPOINTS (Tailwind Standard)
+     ======================================== */
+
+  --screen-sm: 640px;
+  --screen-md: 768px;
+  --screen-lg: 1024px;
+  --screen-xl: 1280px;
+  --screen-2xl: 1536px;
+
+  /* ========================================
+     TRANSITIONS
+     ======================================== */
+
+  /* Duration */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+
+  /* Easing */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-sharp: cubic-bezier(0, 0, 0.2, 1);
+
+  /* Combined Transitions (commonly used) */
+  --transition-fast: all var(--duration-fast) var(--ease-in-out);
+  --transition-base: all var(--duration-base) var(--ease-sharp);
+  --transition-colors: background-color var(--duration-fast) var(--ease-in-out);
+
+  /* ========================================
+     Z-INDEX SCALE
+     ======================================== */
+
+  --z-0: 0;
+  --z-10: 10;
+  --z-20: 20;
+  --z-30: 30;
+  --z-40: 40;
+  --z-50: 50;
+  --z-modal: 1000;
+  --z-dropdown: 1000;
+  --z-tooltip: 1500;
+  --z-notification: 2000;
 }
