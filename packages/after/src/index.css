@@ -6,12 +6,46 @@
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* Primary */
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+
+  /* Secondary */
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-hover: var(--secondary-hover);
+
+  /* Destructive */
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-hover: var(--destructive-hover);
+  --color-destructive-light: var(--destructive-light);
+  --color-destructive-dark: var(--destructive-dark);
+
+  /* Success */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-hover: var(--success-hover);
+  --color-success-light: var(--success-light);
+  --color-success-dark: var(--success-dark);
+
+  /* Warning */
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-light: var(--warning-light);
+  --color-warning-dark: var(--warning-dark);
+
+  /* Info */
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  /* Muted, Accent, Border, Input, Ring */
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
@@ -22,16 +56,53 @@
 }
 
 :root {
+  --radius: 0.625rem;
+
+  /* Light Mode - Base Colors */
   --background: var(--gray-50);
   --foreground: var(--gray-800);
   --card: var(--white);
   --card-foreground: var(--gray-800);
+  --popover: var(--white);
+  --popover-foreground: var(--gray-800);
+
+  /* Primary */
   --primary: var(--blue-600);
   --primary-foreground: var(--white);
+  --primary-hover: var(--blue-700);
+  --primary-light: var(--blue-50);
+  --primary-dark: var(--blue-900);
+
+  /* Secondary */
   --secondary: var(--gray-100);
   --secondary-foreground: var(--gray-800);
+  --secondary-hover: var(--gray-200);
+
+  /* Destructive */
   --destructive: var(--red-600);
   --destructive-foreground: var(--white);
+  --destructive-hover: var(--red-700);
+  --destructive-light: var(--red-50);
+  --destructive-dark: var(--red-900);
+
+  /* Success */
+  --success: var(--green-600);
+  --success-foreground: var(--white);
+  --success-hover: var(--green-700);
+  --success-light: var(--green-50);
+  --success-dark: var(--green-900);
+
+  /* Warning */
+  --warning: var(--orange-600);
+  --warning-foreground: var(--white);
+  --warning-light: var(--orange-50);
+  --warning-dark: var(--orange-900);
+
+  /* Info */
+  --info: var(--cyan-600);
+  --info-foreground: var(--white);
+
+  /* Muted, Accent, Border, Input, Ring */
   --muted: var(--gray-100);
   --muted-foreground: var(--gray-500);
   --accent: var(--gray-100);
@@ -42,21 +113,56 @@
 }
 
 .dark {
+  /* Dark Mode - Base Colors */
   --background: var(--gray-900);
   --foreground: var(--gray-50);
   --card: var(--gray-800);
   --card-foreground: var(--gray-50);
+  --popover: var(--gray-800);
+  --popover-foreground: var(--gray-50);
+
+  /* Primary */
   --primary: var(--blue-600);
   --primary-foreground: var(--white);
+  --primary-hover: var(--blue-700);
+  --primary-light: var(--blue-900);
+  --primary-dark: var(--blue-200);
+
+  /* Secondary */
   --secondary: var(--gray-700);
   --secondary-foreground: var(--gray-50);
+  --secondary-hover: var(--gray-600);
+
+  /* Destructive */
   --destructive: var(--red-600);
   --destructive-foreground: var(--white);
+  --destructive-hover: var(--red-700);
+  --destructive-light: var(--red-900);
+  --destructive-dark: var(--red-200);
+
+  /* Success */
+  --success: var(--green-600);
+  --success-foreground: var(--white);
+  --success-hover: var(--green-700);
+  --success-light: var(--green-900);
+  --success-dark: var(--green-200);
+
+  /* Warning */
+  --warning: var(--orange-600);
+  --warning-foreground: var(--white);
+  --warning-light: var(--orange-900);
+  --warning-dark: var(--orange-200);
+
+  /* Info */
+  --info: var(--cyan-600);
+  --info-foreground: var(--white);
+
+  /* Muted, Accent, Border, Input, Ring */
   --muted: var(--gray-700);
   --muted-foreground: var(--gray-400);
   --accent: var(--gray-700);
   --accent-foreground: var(--gray-50);
-  --border: var(--gray-700);
-  --input: var(--gray-700);
+  --border: var(--gray-600);
+  --input: var(--gray-600);
   --ring: var(--blue-600);
 }
