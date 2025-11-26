@@ -12,7 +12,6 @@ import { userService } from '../services/userService';
 import { postService } from '../services/postService';
 import type { User } from '../services/userService';
 import type { Post } from '../services/postService';
-import { useTheme } from '../contexts/ThemeContext';
 import { X, CheckCircle2, AlertCircle } from 'lucide-react';
 import '../styles/components.css';
 
@@ -20,7 +19,6 @@ type EntityType = 'user' | 'post';
 type Entity = User | Post;
 
 export const ManagementPage: React.FC = () => {
-  const { theme } = useTheme();
   const [entityType, setEntityType] = useState<EntityType>('post');
   const [data, setData] = useState<Entity[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -398,55 +396,31 @@ export const ManagementPage: React.FC = () => {
               </div>
             )}
 
+
             <div className="grid grid-cols-[repeat(auto-fit,minmax(130px,1fr))] gap-2.5 mb-4">
-              <div className="p-3 rounded" style={{
-                backgroundColor: theme === 'dark' ? '#1e3a5f' : '#e3f2fd',
-                borderWidth: '1px',
-                borderStyle: 'solid',
-                borderColor: theme === 'dark' ? '#2563eb' : '#90caf9'
-              }}>
-                <div className="text-xs mb-1" style={{ color: theme === 'dark' ? '#94a3b8' : '#666' }}>전체</div>
-                <div className="text-2xl font-bold" style={{ color: theme === 'dark' ? '#60a5fa' : '#1976d2' }}>{stats.total}</div>
+              <div className="p-3 rounded bg-primary-light border border-primary-light-border">
+                <div className="text-xs mb-1 text-muted-foreground">전체</div>
+                <div className="text-2xl font-bold text-primary">{stats.total}</div>
               </div>
 
-              <div className="p-3 rounded" style={{
-                backgroundColor: theme === 'dark' ? '#1e4620' : '#e8f5e9',
-                borderWidth: '1px',
-                borderStyle: 'solid',
-                borderColor: theme === 'dark' ? '#22c55e' : '#81c784'
-              }}>
-                <div className="text-xs mb-1" style={{ color: theme === 'dark' ? '#94a3b8' : '#666' }}>{stats.stat1.label}</div>
-                <div className="text-2xl font-bold" style={{ color: theme === 'dark' ? '#4ade80' : stats.stat1.color }}>{stats.stat1.value}</div>
+              <div className="p-3 rounded bg-success-light border border-success-light-border">
+                <div className="text-xs mb-1 text-muted-foreground">{stats.stat1.label}</div>
+                <div className="text-2xl font-bold text-success">{stats.stat1.value}</div>
               </div>
 
-              <div className="p-3 rounded" style={{
-                backgroundColor: theme === 'dark' ? '#4a3410' : '#fff3e0',
-                borderWidth: '1px',
-                borderStyle: 'solid',
-                borderColor: theme === 'dark' ? '#f59e0b' : '#ffb74d'
-              }}>
-                <div className="text-xs mb-1" style={{ color: theme === 'dark' ? '#94a3b8' : '#666' }}>{stats.stat2.label}</div>
-                <div className="text-2xl font-bold" style={{ color: theme === 'dark' ? '#fbbf24' : stats.stat2.color }}>{stats.stat2.value}</div>
+              <div className="p-3 rounded bg-warning-light border border-warning-light-border">
+                <div className="text-xs mb-1 text-muted-foreground">{stats.stat2.label}</div>
+                <div className="text-2xl font-bold text-warning">{stats.stat2.value}</div>
               </div>
 
-              <div className="p-3 rounded" style={{
-                backgroundColor: theme === 'dark' ? '#4a1e3a' : '#fce4ec',
-                borderWidth: '1px',
-                borderStyle: 'solid',
-                borderColor: theme === 'dark' ? '#ec4899' : '#f48fb1'
-              }}>
-                <div className="text-xs mb-1" style={{ color: theme === 'dark' ? '#94a3b8' : '#666' }}>{stats.stat3.label}</div>
-                <div className="text-2xl font-bold" style={{ color: theme === 'dark' ? '#f472b6' : stats.stat3.color }}>{stats.stat3.value}</div>
+              <div className="p-3 rounded bg-destructive-light border border-destructive-light-border">
+                <div className="text-xs mb-1 text-muted-foreground">{stats.stat3.label}</div>
+                <div className="text-2xl font-bold text-destructive">{stats.stat3.value}</div>
               </div>
 
-              <div className="p-3 rounded" style={{
-                backgroundColor: theme === 'dark' ? '#2d2d2d' : '#f5f5f5',
-                borderWidth: '1px',
-                borderStyle: 'solid',
-                borderColor: theme === 'dark' ? '#525252' : '#e0e0e0'
-              }}>
-                <div className="text-xs mb-1" style={{ color: theme === 'dark' ? '#94a3b8' : '#666' }}>{stats.stat4.label}</div>
-                <div className="text-2xl font-bold" style={{ color: theme === 'dark' ? '#a3a3a3' : stats.stat4.color }}>{stats.stat4.value}</div>
+              <div className="p-3 rounded bg-muted border border-border">
+                <div className="text-xs mb-1 text-muted-foreground">{stats.stat4.label}</div>
+                <div className="text-2xl font-bold text-foreground">{stats.stat4.value}</div>
               </div>
             </div>
 
