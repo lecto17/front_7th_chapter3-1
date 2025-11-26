@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Badge } from '../components/atoms';
-import { Alert, Table, Modal } from '../components/organisms';
-import { FormInput, FormSelect, FormTextarea } from '../components/molecules';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Alert, AlertTitle, AlertDescription } from '../components/ui/alert';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Textarea } from '../components/ui/textarea';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { userService } from '../services/userService';
 import { postService } from '../services/postService';
 import type { User } from '../services/userService';
 import type { Post } from '../services/postService';
 import { useTheme } from '../contexts/ThemeContext';
+import { X, CheckCircle2, AlertCircle } from 'lucide-react';
 import '../styles/components.css';
 
 type EntityType = 'user' | 'post';
@@ -194,30 +201,117 @@ export const ManagementPage: React.FC = () => {
     }
   };
 
-  // 🚨 Table 컴포넌트에 로직을 위임하여 간소화
-  const renderTableColumns = () => {
+  const getBadgeVariant = (status: string, type: 'user' | 'post' | 'role' | 'category') => {
+    if (type === 'user') {
+      switch (status) {
+        case 'active': return 'success';
+        case 'inactive': return 'warning';
+        case 'suspended': return 'destructive';
+        default: return 'default';
+      }
+    } else if (type === 'post') {
+      switch (status) {
+        case 'published': return 'success';
+        case 'draft': return 'warning';
+        case 'archived': return 'secondary';
+        default: return 'default';
+      }
+    } else if (type === 'role') {
+      switch (status) {
+        case 'admin': return 'destructive';
+        case 'moderator': return 'default';
+        case 'user': return 'secondary';
+        default: return 'default';
+      }
+    } else if (type === 'category') {
+      switch (status) {
+        case 'development': return 'default';
+        case 'design': return 'secondary';
+        case 'accessibility': return 'outline';
+        default: return 'default';
+      }
+    }
+    return 'default';
+  };
+
+  const renderTableRow = (item: Entity) => {
     if (entityType === 'user') {
-      return [
-        { key: 'id', header: 'ID', width: '60px' },
-        { key: 'username', header: '사용자명', width: '150px' },
-        { key: 'email', header: '이메일' },
-        { key: 'role', header: '역할', width: '120px' },
-        { key: 'status', header: '상태', width: '120px' },
-        { key: 'createdAt', header: '생성일', width: '120px' },
-        { key: 'lastLogin', header: '마지막 로그인', width: '140px' },
-        { key: 'actions', header: '관리', width: '200px' },
-      ];
+      const user = item as User;
+      return (
+        <TableRow key={user.id} className="hover:bg-muted/50">
+          <TableCell>{user.id}</TableCell>
+          <TableCell className="font-medium">{user.username}</TableCell>
+          <TableCell>{user.email}</TableCell>
+          <TableCell>
+            <Badge variant={getBadgeVariant(user.role, 'role')}>
+              {user.role === 'admin' ? '관리자' : user.role === 'moderator' ? '운영자' : '사용자'}
+            </Badge>
+          </TableCell>
+          <TableCell>
+            <Badge variant={getBadgeVariant(user.status, 'user')}>
+              {user.status === 'active' ? '활성' : user.status === 'inactive' ? '비활성' : '정지'}
+            </Badge>
+          </TableCell>
+          <TableCell className="text-sm text-muted-foreground">{user.createdAt}</TableCell>
+          <TableCell className="text-sm text-muted-foreground">{user.lastLogin || '-'}</TableCell>
+          <TableCell>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
+                수정
+              </Button>
+              <Button variant="destructive" size="sm" onClick={() => handleDelete(user.id)}>
+                삭제
+              </Button>
+            </div>
+          </TableCell>
+        </TableRow>
+      );
     } else {
-      return [
-        { key: 'id', header: 'ID', width: '60px' },
-        { key: 'title', header: '제목' },
-        { key: 'author', header: '작성자', width: '120px' },
-        { key: 'category', header: '카테고리', width: '140px' },
-        { key: 'status', header: '상태', width: '120px' },
-        { key: 'views', header: '조회수', width: '100px' },
-        { key: 'createdAt', header: '작성일', width: '120px' },
-        { key: 'actions', header: '관리', width: '250px' },
-      ];
+      const post = item as Post;
+      return (
+        <TableRow key={post.id} className="hover:bg-muted/50">
+          <TableCell>{post.id}</TableCell>
+          <TableCell className="font-medium">{post.title}</TableCell>
+          <TableCell>{post.author}</TableCell>
+          <TableCell>
+            <Badge variant={getBadgeVariant(post.category, 'category')}>
+              {post.category}
+            </Badge>
+          </TableCell>
+          <TableCell>
+            <Badge variant={getBadgeVariant(post.status, 'post')}>
+              {post.status === 'published' ? '게시됨' : post.status === 'draft' ? '임시저장' : '보관됨'}
+            </Badge>
+          </TableCell>
+          <TableCell className="text-center">{post.views}</TableCell>
+          <TableCell className="text-sm text-muted-foreground">{post.createdAt}</TableCell>
+          <TableCell>
+            <div className="flex gap-1">
+              <Button variant="outline" size="sm" onClick={() => handleEdit(post)}>
+                수정
+              </Button>
+              <Button variant="destructive" size="sm" onClick={() => handleDelete(post.id)}>
+                삭제
+              </Button>
+              {post.status === 'draft' && (
+                <Button variant="default" size="sm" onClick={() => handleStatusAction(post.id, 'publish')}>
+                  게시
+                </Button>
+              )}
+              {post.status === 'published' && (
+                <Button variant="secondary" size="sm" onClick={() => handleStatusAction(post.id, 'archive')}>
+                  보관
+                </Button>
+              )}
+              {post.status === 'archived' && (
+                <Button variant="default" size="sm" onClick={() => handleStatusAction(post.id, 'restore')}>
+                  복원
+                </Button>
+              )}
+            </div>
+          </TableCell>
+        </TableRow>
+      );
     }
   };
 
@@ -235,7 +329,7 @@ export const ManagementPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-card border border-border p-2.5">
+        <div className="bg-card border border-border p-2.5 rounded-lg">
           <div className="mb-4 border-b-2 border-border pb-1.5">
             <button
               onClick={() => setEntityType('post')}
@@ -261,31 +355,45 @@ export const ManagementPage: React.FC = () => {
 
           <div>
             <div className="mb-4 text-right">
-              <Button variant="primary" size="md" onClick={() => setIsCreateModalOpen(true)}>
+              <Button onClick={() => setIsCreateModalOpen(true)}>
                 새로 만들기
               </Button>
             </div>
 
             {showSuccessAlert && (
-              <div className="mb-2.5">
-                <Alert
-                  variant="success"
-                  title="성공"
-                  onClose={() => setShowSuccessAlert(false)}
-                >
-                  {alertMessage}
+              <div className="mb-2.5 relative">
+                <Alert variant="default" className="border-green-500 bg-green-50 dark:bg-green-950">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <AlertTitle className="text-green-800 dark:text-green-200">성공</AlertTitle>
+                  <AlertDescription className="text-green-700 dark:text-green-300">
+                    {alertMessage}
+                  </AlertDescription>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 h-6 w-6"
+                    onClick={() => setShowSuccessAlert(false)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 </Alert>
               </div>
             )}
 
             {showErrorAlert && (
-              <div className="mb-2.5">
-                <Alert
-                  variant="error"
-                  title="오류"
-                  onClose={() => setShowErrorAlert(false)}
-                >
-                  {errorMessage}
+              <div className="mb-2.5 relative">
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>오류</AlertTitle>
+                  <AlertDescription>{errorMessage}</AlertDescription>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 h-6 w-6"
+                    onClick={() => setShowErrorAlert(false)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 </Alert>
               </div>
             )}
@@ -342,279 +450,292 @@ export const ManagementPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="border border-border bg-card overflow-auto">
-              <Table
-                columns={renderTableColumns()}
-                data={data}
-                striped
-                hover
-                entityType={entityType}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onPublish={(id) => handleStatusAction(id, 'publish')}
-                onArchive={(id) => handleStatusAction(id, 'archive')}
-                onRestore={(id) => handleStatusAction(id, 'restore')}
-              />
+            <div className="border border-border bg-card overflow-auto rounded-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    {entityType === 'user' ? (
+                      <>
+                        <TableHead className="w-[60px]">ID</TableHead>
+                        <TableHead className="w-[150px]">사용자명</TableHead>
+                        <TableHead>이메일</TableHead>
+                        <TableHead className="w-[120px]">역할</TableHead>
+                        <TableHead className="w-[120px]">상태</TableHead>
+                        <TableHead className="w-[120px]">생성일</TableHead>
+                        <TableHead className="w-[140px]">마지막 로그인</TableHead>
+                        <TableHead className="w-[200px]">관리</TableHead>
+                      </>
+                    ) : (
+                      <>
+                        <TableHead className="w-[60px]">ID</TableHead>
+                        <TableHead>제목</TableHead>
+                        <TableHead className="w-[120px]">작성자</TableHead>
+                        <TableHead className="w-[140px]">카테고리</TableHead>
+                        <TableHead className="w-[120px]">상태</TableHead>
+                        <TableHead className="w-[100px]">조회수</TableHead>
+                        <TableHead className="w-[120px]">작성일</TableHead>
+                        <TableHead className="w-[250px]">관리</TableHead>
+                      </>
+                    )}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.map(item => renderTableRow(item))}
+                </TableBody>
+              </Table>
             </div>
           </div>
         </div>
 
       </div>
 
-        <Modal
-          isOpen={isCreateModalOpen}
-          onClose={() => {
-            setIsCreateModalOpen(false);
-            setFormData({});
-          }}
-          title={`새 ${entityType === 'user' ? '사용자' : '게시글'} 만들기`}
-          size="large"
-          showFooter
-          footerContent={
-            <>
-              <Button variant="secondary" size="md" onClick={() => {
-                setIsCreateModalOpen(false);
-                setFormData({});
-              }}>
-                취소
-              </Button>
-              <Button variant="primary" size="md" onClick={handleCreate}>
-                생성
-              </Button>
-            </>
-          }
-        >
-          <div>
+      {/* Create Modal */}
+      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>새 {entityType === 'user' ? '사용자' : '게시글'} 만들기</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
             {entityType === 'user' ? (
               <>
-                <FormInput
-                  name="username"
-                  value={formData.username || ''}
-                  onChange={(value) => setFormData({ ...formData, username: value })}
-                  label="사용자명"
-                  placeholder="사용자명을 입력하세요"
-                  required
-                  width="full"
-                  fieldType="username"
-                />
-                <FormInput
-                  name="email"
-                  value={formData.email || ''}
-                  onChange={(value) => setFormData({ ...formData, email: value })}
-                  label="이메일"
-                  placeholder="이메일을 입력하세요"
-                  type="email"
-                  required
-                  width="full"
-                  fieldType="email"
-                />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <FormSelect
-                    name="role"
-                    value={formData.role || 'user'}
-                    onChange={(value) => setFormData({ ...formData, role: value })}
-                    options={[
-                      { value: 'user', label: '사용자' },
-                      { value: 'moderator', label: '운영자' },
-                      { value: 'admin', label: '관리자' },
-                    ]}
-                    label="역할"
-                    size="md"
+                <div className="space-y-2">
+                  <Label htmlFor="username">사용자명 *</Label>
+                  <Input
+                    id="username"
+                    value={formData.username || ''}
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    placeholder="사용자명을 입력하세요"
                   />
-                  <FormSelect
-                    name="status"
-                    value={formData.status || 'active'}
-                    onChange={(value) => setFormData({ ...formData, status: value })}
-                    options={[
-                      { value: 'active', label: '활성' },
-                      { value: 'inactive', label: '비활성' },
-                      { value: 'suspended', label: '정지' },
-                    ]}
-                    label="상태"
-                    size="md"
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">이메일 *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email || ''}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="이메일을 입력하세요"
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="role">역할</Label>
+                    <Select value={formData.role || 'user'} onValueChange={(value) => setFormData({ ...formData, role: value })}>
+                      <SelectTrigger id="role">
+                        <SelectValue placeholder="역할 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="user">사용자</SelectItem>
+                        <SelectItem value="moderator">운영자</SelectItem>
+                        <SelectItem value="admin">관리자</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="status">상태</Label>
+                    <Select value={formData.status || 'active'} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                      <SelectTrigger id="status">
+                        <SelectValue placeholder="상태 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">활성</SelectItem>
+                        <SelectItem value="inactive">비활성</SelectItem>
+                        <SelectItem value="suspended">정지</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </>
             ) : (
               <>
-                <FormInput
-                  name="title"
-                  value={formData.title || ''}
-                  onChange={(value) => setFormData({ ...formData, title: value })}
-                  label="제목"
-                  placeholder="게시글 제목을 입력하세요"
-                  required
-                  width="full"
-                  fieldType="postTitle"
-                />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <FormInput
-                    name="author"
-                    value={formData.author || ''}
-                    onChange={(value) => setFormData({ ...formData, author: value })}
-                    label="작성자"
-                    placeholder="작성자명"
-                    required
-                    width="full"
-                  />
-                  <FormSelect
-                    name="category"
-                    value={formData.category || ''}
-                    onChange={(value) => setFormData({ ...formData, category: value })}
-                    options={[
-                      { value: 'development', label: 'Development' },
-                      { value: 'design', label: 'Design' },
-                      { value: 'accessibility', label: 'Accessibility' },
-                    ]}
-                    label="카테고리"
-                    placeholder="카테고리 선택"
-                    size="md"
+                <div className="space-y-2">
+                  <Label htmlFor="title">제목 *</Label>
+                  <Input
+                    id="title"
+                    value={formData.title || ''}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="게시글 제목을 입력하세요"
                   />
                 </div>
-                <FormTextarea
-                  name="content"
-                  value={formData.content || ''}
-                  onChange={(value) => setFormData({ ...formData, content: value })}
-                  label="내용"
-                  placeholder="게시글 내용을 입력하세요"
-                  rows={6}
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="author">작성자 *</Label>
+                    <Input
+                      id="author"
+                      value={formData.author || ''}
+                      onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                      placeholder="작성자명"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="category">카테고리</Label>
+                    <Select value={formData.category || ''} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                      <SelectTrigger id="category">
+                        <SelectValue placeholder="카테고리 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="development">Development</SelectItem>
+                        <SelectItem value="design">Design</SelectItem>
+                        <SelectItem value="accessibility">Accessibility</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="content">내용</Label>
+                  <Textarea
+                    id="content"
+                    value={formData.content || ''}
+                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                    placeholder="게시글 내용을 입력하세요"
+                    rows={6}
+                  />
+                </div>
               </>
             )}
           </div>
-        </Modal>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => {
+              setIsCreateModalOpen(false);
+              setFormData({});
+            }}>
+              취소
+            </Button>
+            <Button onClick={handleCreate}>
+              생성
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-        <Modal
-          isOpen={isEditModalOpen}
-          onClose={() => {
-            setIsEditModalOpen(false);
-            setFormData({});
-            setSelectedItem(null);
-          }}
-          title={`${entityType === 'user' ? '사용자' : '게시글'} 수정`}
-          size="large"
-          showFooter
-          footerContent={
-            <>
-              <Button variant="secondary" size="md" onClick={() => {
-                setIsEditModalOpen(false);
-                setFormData({});
-                setSelectedItem(null);
-              }}>
-                취소
-              </Button>
-              <Button variant="primary" size="md" onClick={handleUpdate}>
-                수정 완료
-              </Button>
-            </>
-          }
-        >
-          <div>
+      {/* Edit Modal */}
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{entityType === 'user' ? '사용자' : '게시글'} 수정</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
             {selectedItem && (
-              <Alert variant="info">
-                ID: {selectedItem.id} | 생성일: {selectedItem.createdAt}
-                {entityType === 'post' && ` | 조회수: ${(selectedItem as Post).views}`}
+              <Alert>
+                <AlertDescription>
+                  ID: {selectedItem.id} | 생성일: {selectedItem.createdAt}
+                  {entityType === 'post' && ` | 조회수: ${(selectedItem as Post).views}`}
+                </AlertDescription>
               </Alert>
             )}
 
             {entityType === 'user' ? (
               <>
-                <FormInput
-                  name="username"
-                  value={formData.username || ''}
-                  onChange={(value) => setFormData({ ...formData, username: value })}
-                  label="사용자명"
-                  placeholder="사용자명을 입력하세요"
-                  required
-                  width="full"
-                  fieldType="username"
-                />
-                <FormInput
-                  name="email"
-                  value={formData.email || ''}
-                  onChange={(value) => setFormData({ ...formData, email: value })}
-                  label="이메일"
-                  placeholder="이메일을 입력하세요"
-                  type="email"
-                  required
-                  width="full"
-                  fieldType="email"
-                />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <FormSelect
-                    name="role"
-                    value={formData.role || 'user'}
-                    onChange={(value) => setFormData({ ...formData, role: value })}
-                    options={[
-                      { value: 'user', label: '사용자' },
-                      { value: 'moderator', label: '운영자' },
-                      { value: 'admin', label: '관리자' },
-                    ]}
-                    label="역할"
-                    size="md"
+                <div className="space-y-2">
+                  <Label htmlFor="edit-username">사용자명 *</Label>
+                  <Input
+                    id="edit-username"
+                    value={formData.username || ''}
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    placeholder="사용자명을 입력하세요"
                   />
-                  <FormSelect
-                    name="status"
-                    value={formData.status || 'active'}
-                    onChange={(value) => setFormData({ ...formData, status: value })}
-                    options={[
-                      { value: 'active', label: '활성' },
-                      { value: 'inactive', label: '비활성' },
-                      { value: 'suspended', label: '정지' },
-                    ]}
-                    label="상태"
-                    size="md"
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-email">이메일 *</Label>
+                  <Input
+                    id="edit-email"
+                    type="email"
+                    value={formData.email || ''}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="이메일을 입력하세요"
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-role">역할</Label>
+                    <Select value={formData.role || 'user'} onValueChange={(value) => setFormData({ ...formData, role: value })}>
+                      <SelectTrigger id="edit-role">
+                        <SelectValue placeholder="역할 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="user">사용자</SelectItem>
+                        <SelectItem value="moderator">운영자</SelectItem>
+                        <SelectItem value="admin">관리자</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-status">상태</Label>
+                    <Select value={formData.status || 'active'} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                      <SelectTrigger id="edit-status">
+                        <SelectValue placeholder="상태 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">활성</SelectItem>
+                        <SelectItem value="inactive">비활성</SelectItem>
+                        <SelectItem value="suspended">정지</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </>
             ) : (
               <>
-                <FormInput
-                  name="title"
-                  value={formData.title || ''}
-                  onChange={(value) => setFormData({ ...formData, title: value })}
-                  label="제목"
-                  placeholder="게시글 제목을 입력하세요"
-                  required
-                  width="full"
-                  fieldType="postTitle"
-                />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <FormInput
-                    name="author"
-                    value={formData.author || ''}
-                    onChange={(value) => setFormData({ ...formData, author: value })}
-                    label="작성자"
-                    placeholder="작성자명"
-                    required
-                    width="full"
-                  />
-                  <FormSelect
-                    name="category"
-                    value={formData.category || ''}
-                    onChange={(value) => setFormData({ ...formData, category: value })}
-                    options={[
-                      { value: 'development', label: 'Development' },
-                      { value: 'design', label: 'Design' },
-                      { value: 'accessibility', label: 'Accessibility' },
-                    ]}
-                    label="카테고리"
-                    placeholder="카테고리 선택"
-                    size="md"
+                <div className="space-y-2">
+                  <Label htmlFor="edit-title">제목 *</Label>
+                  <Input
+                    id="edit-title"
+                    value={formData.title || ''}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="게시글 제목을 입력하세요"
                   />
                 </div>
-                <FormTextarea
-                  name="content"
-                  value={formData.content || ''}
-                  onChange={(value) => setFormData({ ...formData, content: value })}
-                  label="내용"
-                  placeholder="게시글 내용을 입력하세요"
-                  rows={6}
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-author">작성자 *</Label>
+                    <Input
+                      id="edit-author"
+                      value={formData.author || ''}
+                      onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                      placeholder="작성자명"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-category">카테고리</Label>
+                    <Select value={formData.category || ''} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                      <SelectTrigger id="edit-category">
+                        <SelectValue placeholder="카테고리 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="development">Development</SelectItem>
+                        <SelectItem value="design">Design</SelectItem>
+                        <SelectItem value="accessibility">Accessibility</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-content">내용</Label>
+                  <Textarea
+                    id="edit-content"
+                    value={formData.content || ''}
+                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                    placeholder="게시글 내용을 입력하세요"
+                    rows={6}
+                  />
+                </div>
               </>
             )}
           </div>
-        </Modal>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => {
+              setIsEditModalOpen(false);
+              setFormData({});
+              setSelectedItem(null);
+            }}>
+              취소
+            </Button>
+            <Button onClick={handleUpdate}>
+              수정 완료
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
