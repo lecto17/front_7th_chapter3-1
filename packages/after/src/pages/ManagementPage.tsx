@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { CheckCircle2, AlertCircle, X } from 'lucide-react';
 import { useEntityManagement } from '@/hooks/useEntityManagement';
-import { useModal } from '@/hooks/useModal';
+import { useUserHandlers } from '@/hooks/useUserHandlers';
+import { usePostHandlers } from '@/hooks/usePostHandlers';
 import { useNotification } from '@/hooks/useNotification';
 import { useEntityStats } from '@/hooks/useEntityStats';
 import { StatisticsCards } from '@/components/features/dashboard/StatisticsCards';
@@ -11,11 +12,8 @@ import { UserTable } from '@/components/features/users/UserTable';
 import { PostTable } from '@/components/features/posts/PostTable';
 import { UserModal } from '@/components/features/users/UserModal';
 import { PostModal } from '@/components/features/posts/PostModal';
-import { postService } from '@/services/postService';
 import type { User } from '@/services/userService';
 import type { Post } from '@/services/postService';
-import type { UserFormData } from '@/schemas/userSchema';
-import type { PostFormData } from '@/schemas/postSchema';
 import '@/styles/components.css';
 
 type EntityType = 'user' | 'post';
@@ -23,115 +21,37 @@ type EntityType = 'user' | 'post';
 export const ManagementPage: React.FC = () => {
   // State
   const [entityType, setEntityType] = useState<EntityType>('post');
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   // Hooks
   const { data, isLoading, create, update, deleteEntity } =
     useEntityManagement(entityType);
-  const userModal = useModal();
-  const postModal = useModal();
-  const { notification, showSuccess, showError, dismiss } = useNotification();
+  const { notification, dismiss } = useNotification();
   const stats = useEntityStats(data, entityType);
 
-  // Handlers - User
-  const handleCreateUser = async (formData: UserFormData) => {
-    try {
-      await create(formData);
-      showSuccess('사용자가 생성되었습니다');
-    } catch (error) {
-      showError(error instanceof Error ? error.message : '생성에 실패했습니다');
-    }
-  };
+  // User Handlers
+  const {
+    selectedUser,
+    userModal,
+    handleCreateUser,
+    handleEditUser,
+    handleUpdateUser,
+    handleDeleteUser,
+    handleCloseUserModal
+  } = useUserHandlers({ create, update, deleteEntity });
 
-  const handleEditUser = (user: User) => {
-    setSelectedUser(user);
-    userModal.open();
-  };
-
-  const handleUpdateUser = async (formData: UserFormData) => {
-    if (!selectedUser) return;
-    try {
-      await update(selectedUser.id, formData);
-      showSuccess('사용자가 수정되었습니다');
-      setSelectedUser(null);
-    } catch (error) {
-      showError(error instanceof Error ? error.message : '수정에 실패했습니다');
-    }
-  };
-
-  const handleDeleteUser = async (id: number) => {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-    try {
-      await deleteEntity(id);
-      showSuccess('삭제되었습니다');
-    } catch (error) {
-      showError(error instanceof Error ? error.message : '삭제에 실패했습니다');
-    }
-  };
-
-  // Handlers - Post
-  const handleCreatePost = async (formData: PostFormData) => {
-    try {
-      await create(formData);
-      showSuccess('게시글이 생성되었습니다');
-    } catch (error) {
-      showError(error instanceof Error ? error.message : '생성에 실패했습니다');
-    }
-  };
-
-  const handleEditPost = (post: Post) => {
-    setSelectedPost(post);
-    postModal.open();
-  };
-
-  const handleUpdatePost = async (formData: PostFormData) => {
-    if (!selectedPost) return;
-    try {
-      await update(selectedPost.id, formData);
-      showSuccess('게시글이 수정되었습니다');
-      setSelectedPost(null);
-    } catch (error) {
-      showError(error instanceof Error ? error.message : '수정에 실패했습니다');
-    }
-  };
-
-  const handleDeletePost = async (id: number) => {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-    try {
-      await deleteEntity(id);
-      showSuccess('삭제되었습니다');
-    } catch (error) {
-      showError(error instanceof Error ? error.message : '삭제에 실패했습니다');
-    }
-  };
-
-  const handlePublish = async (id: number) => {
-    try {
-      await postService.publish(id);
-      showSuccess('게시되었습니다');
-    } catch (error) {
-      showError(error instanceof Error ? error.message : '게시에 실패했습니다');
-    }
-  };
-
-  const handleArchive = async (id: number) => {
-    try {
-      await postService.archive(id);
-      showSuccess('보관되었습니다');
-    } catch (error) {
-      showError(error instanceof Error ? error.message : '보관에 실패했습니다');
-    }
-  };
-
-  const handleRestore = async (id: number) => {
-    try {
-      await postService.restore(id);
-      showSuccess('복원되었습니다');
-    } catch (error) {
-      showError(error instanceof Error ? error.message : '복원에 실패했습니다');
-    }
-  };
+  // Post Handlers
+  const {
+    selectedPost,
+    postModal,
+    handleCreatePost,
+    handleEditPost,
+    handleUpdatePost,
+    handleDeletePost,
+    handlePublish,
+    handleArchive,
+    handleRestore,
+    handleClosePostModal
+  } = usePostHandlers({ create, update, deleteEntity });
 
   return (
     <div className="min-h-screen bg-[#f0f0f0] dark:bg-background">
@@ -262,20 +182,14 @@ export const ManagementPage: React.FC = () => {
         {/* Modals */}
         <UserModal
           isOpen={userModal.isOpen}
-          onClose={() => {
-            userModal.close();
-            setSelectedUser(null);
-          }}
+          onClose={handleCloseUserModal}
           onSubmit={selectedUser ? handleUpdateUser : handleCreateUser}
           user={selectedUser}
         />
 
         <PostModal
           isOpen={postModal.isOpen}
-          onClose={() => {
-            postModal.close();
-            setSelectedPost(null);
-          }}
+          onClose={handleClosePostModal}
           onSubmit={selectedPost ? handleUpdatePost : handleCreatePost}
           post={selectedPost}
         />
