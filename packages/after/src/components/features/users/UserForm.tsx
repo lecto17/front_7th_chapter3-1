@@ -2,8 +2,15 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { userFormSchema, type UserFormData } from '@/schemas/userSchema';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   NativeSelect,
   NativeSelectOption
@@ -43,82 +50,105 @@ export const UserForm: React.FC<UserFormProps> = ({
   };
 
   return (
-    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="username">
-          사용자명 <span className="text-destructive">*</span>
-        </Label>
-        <Input
-          id="username"
-          {...form.register('username')}
-          placeholder="사용자명을 입력하세요"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                사용자명 <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="사용자명을 입력하세요" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {form.formState.errors.username && (
-          <p className="text-sm text-destructive">
-            {form.formState.errors.username.message}
-          </p>
-        )}
-      </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="email">
-          이메일 <span className="text-destructive">*</span>
-        </Label>
-        <Input
-          id="email"
-          type="email"
-          {...form.register('email')}
-          placeholder="이메일을 입력하세요"
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                이메일 <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder="이메일을 입력하세요"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {form.formState.errors.email && (
-          <p className="text-sm text-destructive">
-            {form.formState.errors.email.message}
-          </p>
-        )}
-      </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="role">
-          역할 <span className="text-destructive">*</span>
-        </Label>
-        <NativeSelect id="role" {...form.register('role')}>
-          <NativeSelectOption value="">역할을 선택하세요</NativeSelectOption>
-          <NativeSelectOption value="user">사용자</NativeSelectOption>
-          <NativeSelectOption value="moderator">운영자</NativeSelectOption>
-          <NativeSelectOption value="admin">관리자</NativeSelectOption>
-        </NativeSelect>
-        {form.formState.errors.role && (
-          <p className="text-sm text-destructive">
-            {form.formState.errors.role.message}
-          </p>
-        )}
-      </div>
+        <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                역할 <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <NativeSelect {...field}>
+                  <NativeSelectOption value="">
+                    역할을 선택하세요
+                  </NativeSelectOption>
+                  <NativeSelectOption value="user">사용자</NativeSelectOption>
+                  <NativeSelectOption value="moderator">
+                    운영자
+                  </NativeSelectOption>
+                  <NativeSelectOption value="admin">관리자</NativeSelectOption>
+                </NativeSelect>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <div className="space-y-2">
-        <Label htmlFor="status">
-          상태 <span className="text-destructive">*</span>
-        </Label>
-        <NativeSelect id="status" {...form.register('status')}>
-          <NativeSelectOption value="">상태를 선택하세요</NativeSelectOption>
-          <NativeSelectOption value="active">활성</NativeSelectOption>
-          <NativeSelectOption value="inactive">비활성</NativeSelectOption>
-          <NativeSelectOption value="suspended">정지</NativeSelectOption>
-        </NativeSelect>
-        {form.formState.errors.status && (
-          <p className="text-sm text-destructive">
-            {form.formState.errors.status.message}
-          </p>
-        )}
-      </div>
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                상태 <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <NativeSelect {...field}>
+                  <NativeSelectOption value="">
+                    상태를 선택하세요
+                  </NativeSelectOption>
+                  <NativeSelectOption value="active">활성</NativeSelectOption>
+                  <NativeSelectOption value="inactive">
+                    비활성
+                  </NativeSelectOption>
+                  <NativeSelectOption value="suspended">
+                    정지
+                  </NativeSelectOption>
+                </NativeSelect>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          취소
-        </Button>
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? '저장 중...' : submitLabel}
-        </Button>
-      </div>
-    </form>
+        <div className="flex justify-end gap-2 pt-4">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            취소
+          </Button>
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? '저장 중...' : submitLabel}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
