@@ -39,7 +39,7 @@ export const EditUserModal: React.FC<EditUserModalProps> = ({
           }}
           onSubmit={handleSubmit}
           onCancel={onClose}
-          submitLabel="수정"
+          submitLabel="수정 완료"
         />
       </DialogContent>
     </Dialog>

@@ -16,13 +16,13 @@ export const UserPostSelector: React.FC<UserPostSelectorProps> = ({
         variant={selected === "user" ? "default" : "outline"}
         onClick={() => onSelect("user")}
       >
-        사용자 관리
+        사용자
       </Button>
       <Button
         variant={selected === "post" ? "default" : "outline"}
         onClick={() => onSelect("post")}
       >
-        게시글 관리
+        게시글
       </Button>
     </div>
   );

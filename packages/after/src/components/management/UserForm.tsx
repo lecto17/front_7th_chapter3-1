@@ -4,13 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { userFormSchema, type UserFormData } from "../../schemas/userSchema";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import { NativeSelect, NativeSelectOption } from "../ui/native-select";
 import { Button } from "../ui/button";
 
 interface UserFormProps {
@@ -84,21 +78,12 @@ export const UserForm: React.FC<UserFormProps> = ({
         <Label htmlFor="role">
           역할 <span className="text-destructive">*</span>
         </Label>
-        <Select
-          value={form.watch("role")}
-          onValueChange={(value) =>
-            form.setValue("role", value as UserFormData["role"])
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="역할을 선택하세요" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="user">사용자</SelectItem>
-            <SelectItem value="moderator">운영자</SelectItem>
-            <SelectItem value="admin">관리자</SelectItem>
-          </SelectContent>
-        </Select>
+        <NativeSelect id="role" {...form.register("role")}>
+          <NativeSelectOption value="">역할을 선택하세요</NativeSelectOption>
+          <NativeSelectOption value="user">사용자</NativeSelectOption>
+          <NativeSelectOption value="moderator">운영자</NativeSelectOption>
+          <NativeSelectOption value="admin">관리자</NativeSelectOption>
+        </NativeSelect>
         {form.formState.errors.role && (
           <p className="text-sm text-destructive">
             {form.formState.errors.role.message}
@@ -110,21 +95,12 @@ export const UserForm: React.FC<UserFormProps> = ({
         <Label htmlFor="status">
           상태 <span className="text-destructive">*</span>
         </Label>
-        <Select
-          value={form.watch("status")}
-          onValueChange={(value) =>
-            form.setValue("status", value as UserFormData["status"])
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="상태를 선택하세요" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="active">활성</SelectItem>
-            <SelectItem value="inactive">비활성</SelectItem>
-            <SelectItem value="suspended">정지</SelectItem>
-          </SelectContent>
-        </Select>
+        <NativeSelect id="status" {...form.register("status")}>
+          <NativeSelectOption value="">상태를 선택하세요</NativeSelectOption>
+          <NativeSelectOption value="active">활성</NativeSelectOption>
+          <NativeSelectOption value="inactive">비활성</NativeSelectOption>
+          <NativeSelectOption value="suspended">정지</NativeSelectOption>
+        </NativeSelect>
         {form.formState.errors.status && (
           <p className="text-sm text-destructive">
             {form.formState.errors.status.message}
