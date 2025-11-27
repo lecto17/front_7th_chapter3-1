@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/front_7th_chapter3-1/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>After: Modern Design System</title>
+    <script>
+      // 페이지 로드 전 다크모드 설정을 적용하여 깜빡임 방지
+      (function() {
+        const theme = localStorage.getItem('theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/front_7th_chapter3-1/assets/index-CzuHxmRz.js"></script>
+    <link rel="stylesheet" crossorigin href="/front_7th_chapter3-1/assets/index-CLYKyJYl.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
