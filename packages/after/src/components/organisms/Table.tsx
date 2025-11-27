@@ -1,6 +1,29 @@
 import React, { useState, useEffect } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { Badge } from '../atoms/Badge';
 import { Button } from '../atoms/Button';
+
+const tableVariants = cva(
+  'table',
+  {
+    variants: {
+      striped: {
+        true: 'table-striped',
+      },
+      bordered: {
+        true: 'table-bordered',
+      },
+      hover: {
+        true: 'table-hover',
+      },
+    },
+    defaultVariants: {
+      striped: false,
+      bordered: false,
+      hover: false,
+    },
+  }
+);
 
 interface Column {
   key: string;
@@ -10,16 +33,14 @@ interface Column {
 }
 
 // 🚨 Bad Practice: UI 컴포넌트가 도메인 타입을 알고 있음
-interface TableProps {
+interface TableProps extends VariantProps<typeof tableVariants> {
   columns?: Column[];
   data?: any[];
-  striped?: boolean;
-  bordered?: boolean;
-  hover?: boolean;
   pageSize?: number;
   searchable?: boolean;
   sortable?: boolean;
   onRowClick?: (row: any) => void;
+  className?: string;
 
   // 🚨 도메인 관심사 추가
   entityType?: 'user' | 'post';
@@ -40,6 +61,7 @@ export const Table: React.FC<TableProps> = ({
   searchable = false,
   sortable = false,
   onRowClick,
+  className,
   entityType,
   onEdit,
   onDelete,
@@ -94,13 +116,6 @@ export const Table: React.FC<TableProps> = ({
   );
 
   const totalPages = Math.ceil(filteredData.length / pageSize);
-
-  const tableClasses = [
-    'table',
-    striped && 'table-striped',
-    bordered && 'table-bordered',
-    hover && 'table-hover',
-  ].filter(Boolean).join(' ');
 
   const actualColumns = columns || (tableData[0] ? Object.keys(tableData[0]).map(key => ({ key, header: key, width: undefined })) : []);
 
@@ -215,7 +230,7 @@ export const Table: React.FC<TableProps> = ({
         </div>
       )}
 
-      <table className={tableClasses}>
+      <table className={tableVariants({ striped, bordered, hover, className })}>
         <thead>
           <tr>
             {actualColumns.map((column) => (

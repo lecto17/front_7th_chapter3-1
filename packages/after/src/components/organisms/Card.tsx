@@ -1,11 +1,29 @@
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-interface CardProps {
+const cardVariants = cva(
+  'card',
+  {
+    variants: {
+      variant: {
+        default: 'card-default',
+        bordered: 'card-bordered',
+        elevated: 'card-elevated',
+        flat: 'card-flat',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  }
+);
+
+interface CardProps extends VariantProps<typeof cardVariants> {
   children?: React.ReactNode;
   title?: string;
   subtitle?: string;
-  variant?: 'default' | 'bordered' | 'elevated' | 'flat';
   headerActions?: React.ReactNode;
+  className?: string;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -14,11 +32,10 @@ export const Card: React.FC<CardProps> = ({
   subtitle,
   variant = 'default',
   headerActions,
+  className,
 }) => {
-  const cardClasses = ['card', `card-${variant}`].join(' ');
-
   return (
-    <div className={cardClasses}>
+    <div className={cardVariants({ variant, className })}>
       {(title || subtitle || headerActions) && (
         <div className="card-header">
           <div>

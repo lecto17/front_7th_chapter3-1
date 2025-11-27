@@ -1,11 +1,38 @@
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
+const badgeVariants = cva(
+  'badge',
+  {
+    variants: {
+      type: {
+        primary: 'badge-primary',
+        secondary: 'badge-secondary',
+        success: 'badge-success',
+        danger: 'badge-danger',
+        warning: 'badge-warning',
+        info: 'badge-info',
+      },
+      size: {
+        small: 'badge-small',
+        medium: 'badge-medium',
+        large: 'badge-large',
+      },
+      pill: {
+        true: 'badge-pill',
+      },
+    },
+    defaultVariants: {
+      type: 'primary',
+      size: 'medium',
+      pill: false,
+    },
+  }
+);
 
-interface BadgeProps {
+interface BadgeProps extends VariantProps<typeof badgeVariants> {
   children?: React.ReactNode;
-  type?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
-  size?: 'small' | 'medium' | 'large';
-  pill?: boolean;
+  className?: string;
   status?: 'published' | 'draft' | 'archived' | 'pending' | 'rejected';
   userRole?: 'admin' | 'moderator' | 'user' | 'guest';
   priority?: 'high' | 'medium' | 'low';
@@ -18,6 +45,7 @@ export const Badge: React.FC<BadgeProps> = ({
   type = 'primary',
   size = 'medium',
   pill = false,
+  className,
   status,
   userRole,
   priority,
@@ -113,15 +141,8 @@ export const Badge: React.FC<BadgeProps> = ({
     }
   }
 
-  const classes = [
-    'badge',
-    `badge-${actualType}`,
-    `badge-${size}`,
-    pill && 'badge-pill',
-  ].filter(Boolean).join(' ');
-
   return (
-    <span className={classes}>
+    <span className={badgeVariants({ type: actualType, size, pill, className })}>
       {actualContent}
     </span>
   );

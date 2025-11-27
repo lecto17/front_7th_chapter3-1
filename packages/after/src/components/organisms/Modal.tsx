@@ -1,13 +1,30 @@
 import React, { useEffect } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-interface ModalProps {
+const modalVariants = cva(
+  'modal-content',
+  {
+    variants: {
+      size: {
+        small: 'modal-small',
+        medium: 'modal-medium',
+        large: 'modal-large',
+      },
+    },
+    defaultVariants: {
+      size: 'medium',
+    },
+  }
+);
+
+interface ModalProps extends VariantProps<typeof modalVariants> {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
-  size?: 'small' | 'medium' | 'large';
   showFooter?: boolean;
   footerContent?: React.ReactNode;
+  className?: string;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -18,6 +35,7 @@ export const Modal: React.FC<ModalProps> = ({
   size = 'medium',
   showFooter = false,
   footerContent,
+  className,
 }) => {
   useEffect(() => {
     if (isOpen) {
@@ -32,11 +50,9 @@ export const Modal: React.FC<ModalProps> = ({
 
   if (!isOpen) return null;
 
-  const modalClasses = ['modal-content', `modal-${size}`].join(' ');
-
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className={modalClasses} onClick={(e) => e.stopPropagation()}>
+      <div className={modalVariants({ size, className })} onClick={(e) => e.stopPropagation()}>
         {title && (
           <div className="modal-header">
             <h3 className="modal-title">{title}</h3>

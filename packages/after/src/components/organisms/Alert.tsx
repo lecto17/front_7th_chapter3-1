@@ -1,12 +1,30 @@
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-// Alert - Different styling approach with inconsistent variants
-interface AlertProps {
+const alertVariants = cva(
+  'alert',
+  {
+    variants: {
+      variant: {
+        default: 'alert-default',
+        info: 'alert-info',
+        success: 'alert-success',
+        warning: 'alert-warning',
+        error: 'alert-error',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  }
+);
+
+interface AlertProps extends VariantProps<typeof alertVariants> {
   children: React.ReactNode;
-  variant?: 'info' | 'success' | 'warning' | 'error' | 'default';
   title?: string;
   onClose?: () => void;
   showIcon?: boolean;
+  className?: string;
 }
 
 export const Alert: React.FC<AlertProps> = ({
@@ -15,6 +33,7 @@ export const Alert: React.FC<AlertProps> = ({
   title,
   onClose,
   showIcon = true,
+  className,
 }) => {
   const getIcon = () => {
     switch (variant) {
@@ -26,10 +45,8 @@ export const Alert: React.FC<AlertProps> = ({
     }
   };
 
-  const alertClasses = ['alert', `alert-${variant}`].join(' ');
-
   return (
-    <div className={alertClasses}>
+    <div className={alertVariants({ variant, className })}>
       {showIcon && <div className="alert-icon">{getIcon()}</div>}
       <div className="alert-content">
         {title && <div className="alert-title">{title}</div>}

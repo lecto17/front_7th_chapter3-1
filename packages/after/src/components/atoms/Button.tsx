@@ -1,14 +1,39 @@
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-// 🚨 Bad Practice: UI 컴포넌트가 도메인 타입을 알고 있음
-interface ButtonProps {
+const buttonVariants = cva(
+  'btn',
+  {
+    variants: {
+      variant: {
+        primary: 'btn-primary',
+        secondary: 'btn-secondary',
+        danger: 'btn-danger',
+        success: 'btn-success',
+      },
+      size: {
+        sm: 'btn-sm',
+        md: 'btn-md',
+        lg: 'btn-lg',
+      },
+      fullWidth: {
+        true: 'btn-fullwidth',
+      },
+    },
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+      fullWidth: false,
+    },
+  }
+);
+
+interface ButtonProps extends VariantProps<typeof buttonVariants> {
   children?: React.ReactNode;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
-  variant?: 'primary' | 'secondary' | 'danger' | 'success';
-  size?: 'sm' | 'md' | 'lg';
-  fullWidth?: boolean;
+  className?: string;
 
   // 🚨 도메인 관심사 추가
   entityType?: 'user' | 'post';
@@ -24,6 +49,7 @@ export const Button: React.FC<ButtonProps> = ({
   variant = 'primary',
   size = 'md',
   fullWidth = false,
+  className,
   entityType,
   action,
   entity,
@@ -74,19 +100,12 @@ export const Button: React.FC<ButtonProps> = ({
     }
   }
 
-  const classes = [
-    'btn',
-    `btn-${actualVariant}`,
-    `btn-${size}`,
-    fullWidth && 'btn-fullwidth',
-  ].filter(Boolean).join(' ');
-
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={actualDisabled}
-      className={classes}
+      className={buttonVariants({ variant: actualVariant, size, fullWidth, className })}
     >
       {actualChildren}
     </button>
