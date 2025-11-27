@@ -1,7 +1,7 @@
-import React from "react";
-import { Header } from "./components/organisms";
-import { ManagementPage } from "./pages/ManagementPage";
-import "./index.css";
+import React from 'react';
+import { Header } from './components/layout/Header';
+import { ManagementPage } from './pages/ManagementPage';
+import './index.css';
 
 export const App: React.FC = () => {
   return (

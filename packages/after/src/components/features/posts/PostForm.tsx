@@ -1,18 +1,18 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { postFormSchema, type PostFormData } from "../../schemas/postSchema";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { postFormSchema, type PostFormData } from '@/schemas/postSchema';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
+  SelectValue
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 
 interface PostFormProps {
   defaultValues?: Partial<PostFormData>;
@@ -25,17 +25,17 @@ export const PostForm: React.FC<PostFormProps> = ({
   defaultValues,
   onSubmit,
   onCancel,
-  submitLabel = "저장",
+  submitLabel = '저장'
 }) => {
   const form = useForm<PostFormData>({
     resolver: zodResolver(postFormSchema),
     defaultValues: defaultValues || {
-      title: "",
-      content: "",
-      author: "",
-      category: "development",
-      status: "draft",
-    },
+      title: '',
+      content: '',
+      author: '',
+      category: 'development',
+      status: 'draft'
+    }
   });
 
   const handleSubmit = async (data: PostFormData) => {
@@ -55,7 +55,7 @@ export const PostForm: React.FC<PostFormProps> = ({
         </Label>
         <Input
           id="title"
-          {...form.register("title")}
+          {...form.register('title')}
           placeholder="제목을 입력하세요"
         />
         {form.formState.errors.title && (
@@ -69,7 +69,7 @@ export const PostForm: React.FC<PostFormProps> = ({
         <Label htmlFor="content">내용</Label>
         <Textarea
           id="content"
-          {...form.register("content")}
+          {...form.register('content')}
           placeholder="내용을 입력하세요"
           rows={4}
         />
@@ -86,7 +86,7 @@ export const PostForm: React.FC<PostFormProps> = ({
         </Label>
         <Input
           id="author"
-          {...form.register("author")}
+          {...form.register('author')}
           placeholder="작성자를 입력하세요"
         />
         {form.formState.errors.author && (
@@ -101,9 +101,9 @@ export const PostForm: React.FC<PostFormProps> = ({
           카테고리 <span className="text-destructive">*</span>
         </Label>
         <Select
-          value={form.watch("category")}
-          onValueChange={(value) =>
-            form.setValue("category", value as PostFormData["category"])
+          value={form.watch('category')}
+          onValueChange={value =>
+            form.setValue('category', value as PostFormData['category'])
           }
         >
           <SelectTrigger>
@@ -127,9 +127,9 @@ export const PostForm: React.FC<PostFormProps> = ({
           상태 <span className="text-destructive">*</span>
         </Label>
         <Select
-          value={form.watch("status")}
-          onValueChange={(value) =>
-            form.setValue("status", value as PostFormData["status"])
+          value={form.watch('status')}
+          onValueChange={value =>
+            form.setValue('status', value as PostFormData['status'])
           }
         >
           <SelectTrigger>
@@ -153,7 +153,7 @@ export const PostForm: React.FC<PostFormProps> = ({
           취소
         </Button>
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? "저장 중..." : submitLabel}
+          {form.formState.isSubmitting ? '저장 중...' : submitLabel}
         </Button>
       </div>
     </form>

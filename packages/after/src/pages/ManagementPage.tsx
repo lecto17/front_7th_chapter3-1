@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
-import { Button } from '../components/ui/button';
-import { Alert, AlertTitle, AlertDescription } from '../components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { CheckCircle2, AlertCircle, X } from 'lucide-react';
-import { useEntityManagement } from '../hooks/useEntityManagement';
-import { useModal } from '../hooks/useModal';
-import { useNotification } from '../hooks/useNotification';
-import { useEntityStats } from '../hooks/useEntityStats';
-import { StatisticsCards } from '../components/management/StatisticsCards';
-import { UserPostSelector } from '../components/management/UserPostSelector';
-import { UserTable } from '../components/management/UserTable';
-import { PostTable } from '../components/management/PostTable';
-import { CreateUserModal } from '../components/management/CreateUserModal';
-import { CreatePostModal } from '../components/management/CreatePostModal';
-import { EditUserModal } from '../components/management/EditUserModal';
-import { EditPostModal } from '../components/management/EditPostModal';
-import { postService } from '../services/postService';
-import type { User } from '../services/userService';
-import type { Post } from '../services/postService';
-import type { UserFormData } from '../schemas/userSchema';
-import type { PostFormData } from '../schemas/postSchema';
-import '../styles/components.css';
+import { useEntityManagement } from '@/hooks/useEntityManagement';
+import { useModal } from '@/hooks/useModal';
+import { useNotification } from '@/hooks/useNotification';
+import { useEntityStats } from '@/hooks/useEntityStats';
+import { StatisticsCards } from '@/components/features/dashboard/StatisticsCards';
+import { UserTable } from '@/components/features/users/UserTable';
+import { PostTable } from '@/components/features/posts/PostTable';
+import { UserModal } from '@/components/features/users/UserModal';
+import { PostModal } from '@/components/features/posts/PostModal';
+import { postService } from '@/services/postService';
+import type { User } from '@/services/userService';
+import type { Post } from '@/services/postService';
+import type { UserFormData } from '@/schemas/userSchema';
+import type { PostFormData } from '@/schemas/postSchema';
+import '@/styles/components.css';
 
 type EntityType = 'user' | 'post';
 
@@ -32,10 +29,8 @@ export const ManagementPage: React.FC = () => {
   // Hooks
   const { data, isLoading, create, update, deleteEntity } =
     useEntityManagement(entityType);
-  const createUserModal = useModal();
-  const createPostModal = useModal();
-  const editUserModal = useModal();
-  const editPostModal = useModal();
+  const userModal = useModal();
+  const postModal = useModal();
   const { notification, showSuccess, showError, dismiss } = useNotification();
   const stats = useEntityStats(data, entityType);
 
@@ -51,7 +46,7 @@ export const ManagementPage: React.FC = () => {
 
   const handleEditUser = (user: User) => {
     setSelectedUser(user);
-    editUserModal.open();
+    userModal.open();
   };
 
   const handleUpdateUser = async (formData: UserFormData) => {
@@ -87,7 +82,7 @@ export const ManagementPage: React.FC = () => {
 
   const handleEditPost = (post: Post) => {
     setSelectedPost(post);
-    editPostModal.open();
+    postModal.open();
   };
 
   const handleUpdatePost = async (formData: PostFormData) => {
@@ -153,17 +148,51 @@ export const ManagementPage: React.FC = () => {
 
         {/* 흰색 컨테이너 */}
         <div className="bg-card border border-border p-2.5">
-          {/* Entity Type Selector */}
-          <UserPostSelector selected={entityType} onSelect={setEntityType} />
+          {/* Entity Type Selector (Inlined) */}
+          <div
+            style={{
+              marginBottom: '15px',
+              borderBottom: '2px solid #ccc',
+              paddingBottom: '5px'
+            }}
+          >
+            <button
+              onClick={() => setEntityType('post')}
+              style={{
+                padding: '8px 16px',
+                marginRight: '5px',
+                fontSize: '14px',
+                fontWeight: entityType === 'post' ? 'bold' : 'normal',
+                border: '1px solid #999',
+                background: entityType === 'post' ? '#1976d2' : '#f5f5f5',
+                color: entityType === 'post' ? 'white' : '#333',
+                cursor: 'pointer',
+                borderRadius: '3px'
+              }}
+            >
+              게시글
+            </button>
+            <button
+              onClick={() => setEntityType('user')}
+              style={{
+                padding: '8px 16px',
+                fontSize: '14px',
+                fontWeight: entityType === 'user' ? 'bold' : 'normal',
+                border: '1px solid #999',
+                background: entityType === 'user' ? '#1976d2' : '#f5f5f5',
+                color: entityType === 'user' ? 'white' : '#333',
+                cursor: 'pointer',
+                borderRadius: '3px'
+              }}
+            >
+              사용자
+            </button>
+          </div>
 
           {/* Create Button */}
           <div className="flex justify-end mb-4">
             <Button
-              onClick={
-                entityType === 'user'
-                  ? createUserModal.open
-                  : createPostModal.open
-              }
+              onClick={entityType === 'user' ? userModal.open : postModal.open}
             >
               새로 만들기
             </Button>
@@ -231,29 +260,23 @@ export const ManagementPage: React.FC = () => {
         </div>
 
         {/* Modals */}
-        <CreateUserModal
-          isOpen={createUserModal.isOpen}
-          onClose={createUserModal.close}
-          onSubmit={handleCreateUser}
-        />
-
-        <CreatePostModal
-          isOpen={createPostModal.isOpen}
-          onClose={createPostModal.close}
-          onSubmit={handleCreatePost}
-        />
-
-        <EditUserModal
-          isOpen={editUserModal.isOpen}
-          onClose={editUserModal.close}
-          onSubmit={handleUpdateUser}
+        <UserModal
+          isOpen={userModal.isOpen}
+          onClose={() => {
+            userModal.close();
+            setSelectedUser(null);
+          }}
+          onSubmit={selectedUser ? handleUpdateUser : handleCreateUser}
           user={selectedUser}
         />
 
-        <EditPostModal
-          isOpen={editPostModal.isOpen}
-          onClose={editPostModal.close}
-          onSubmit={handleUpdatePost}
+        <PostModal
+          isOpen={postModal.isOpen}
+          onClose={() => {
+            postModal.close();
+            setSelectedPost(null);
+          }}
+          onSubmit={selectedPost ? handleUpdatePost : handleCreatePost}
           post={selectedPost}
         />
       </div>

@@ -1,11 +1,14 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { userFormSchema, type UserFormData } from "../../schemas/userSchema";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { NativeSelect, NativeSelectOption } from "../ui/native-select";
-import { Button } from "../ui/button";
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { userFormSchema, type UserFormData } from '@/schemas/userSchema';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  NativeSelect,
+  NativeSelectOption
+} from '@/components/ui/native-select';
+import { Button } from '@/components/ui/button';
 
 interface UserFormProps {
   defaultValues?: Partial<UserFormData>;
@@ -18,16 +21,16 @@ export const UserForm: React.FC<UserFormProps> = ({
   defaultValues,
   onSubmit,
   onCancel,
-  submitLabel = "저장",
+  submitLabel = '저장'
 }) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(userFormSchema),
     defaultValues: defaultValues || {
-      username: "",
-      email: "",
-      role: "user",
-      status: "active",
-    },
+      username: '',
+      email: '',
+      role: 'user',
+      status: 'active'
+    }
   });
 
   const handleSubmit = async (data: UserFormData) => {
@@ -47,7 +50,7 @@ export const UserForm: React.FC<UserFormProps> = ({
         </Label>
         <Input
           id="username"
-          {...form.register("username")}
+          {...form.register('username')}
           placeholder="사용자명을 입력하세요"
         />
         {form.formState.errors.username && (
@@ -64,7 +67,7 @@ export const UserForm: React.FC<UserFormProps> = ({
         <Input
           id="email"
           type="email"
-          {...form.register("email")}
+          {...form.register('email')}
           placeholder="이메일을 입력하세요"
         />
         {form.formState.errors.email && (
@@ -78,7 +81,7 @@ export const UserForm: React.FC<UserFormProps> = ({
         <Label htmlFor="role">
           역할 <span className="text-destructive">*</span>
         </Label>
-        <NativeSelect id="role" {...form.register("role")}>
+        <NativeSelect id="role" {...form.register('role')}>
           <NativeSelectOption value="">역할을 선택하세요</NativeSelectOption>
           <NativeSelectOption value="user">사용자</NativeSelectOption>
           <NativeSelectOption value="moderator">운영자</NativeSelectOption>
@@ -95,7 +98,7 @@ export const UserForm: React.FC<UserFormProps> = ({
         <Label htmlFor="status">
           상태 <span className="text-destructive">*</span>
         </Label>
-        <NativeSelect id="status" {...form.register("status")}>
+        <NativeSelect id="status" {...form.register('status')}>
           <NativeSelectOption value="">상태를 선택하세요</NativeSelectOption>
           <NativeSelectOption value="active">활성</NativeSelectOption>
           <NativeSelectOption value="inactive">비활성</NativeSelectOption>
@@ -113,7 +116,7 @@ export const UserForm: React.FC<UserFormProps> = ({
           취소
         </Button>
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? "저장 중..." : submitLabel}
+          {form.formState.isSubmitting ? '저장 중...' : submitLabel}
         </Button>
       </div>
     </form>
