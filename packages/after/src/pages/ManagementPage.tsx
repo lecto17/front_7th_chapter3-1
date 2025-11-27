@@ -30,7 +30,8 @@ export const ManagementPage: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   // Hooks
-  const { data, isLoading, create, update, deleteEntity } = useEntityManagement(entityType);
+  const { data, isLoading, create, update, deleteEntity } =
+    useEntityManagement(entityType);
   const createUserModal = useModal();
   const createPostModal = useModal();
   const editUserModal = useModal();
@@ -188,9 +189,13 @@ export const ManagementPage: React.FC = () => {
         {/* Create Button */}
         <div className="flex justify-end mb-4">
           <Button
-            onClick={entityType === 'user' ? createUserModal.open : createPostModal.open}
+            onClick={
+              entityType === 'user'
+                ? createUserModal.open
+                : createPostModal.open
+            }
           >
-            {entityType === 'user' ? '사용자 생성' : '게시글 생성'}
+            새로 만들기
           </Button>
         </div>
 
