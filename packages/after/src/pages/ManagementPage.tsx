@@ -139,113 +139,124 @@ export const ManagementPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="bg-card text-card-foreground rounded-lg shadow-sm border p-6">
-        <h1 className="text-2xl font-bold mb-6">관리 페이지</h1>
-
-        {/* Notifications */}
-        {notification.type === 'success' && (
-          <Alert className="mb-4 bg-success-light border-success">
-            <CheckCircle2 className="h-4 w-4 text-success" />
-            <AlertTitle className="text-success">성공</AlertTitle>
-            <AlertDescription className="text-success-dark">
-              {notification.message}
-            </AlertDescription>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute top-2 right-2"
-              onClick={dismiss}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </Alert>
-        )}
-
-        {notification.type === 'error' && (
-          <Alert className="mb-4 bg-destructive-light border-destructive">
-            <AlertCircle className="h-4 w-4 text-destructive" />
-            <AlertTitle className="text-destructive">오류</AlertTitle>
-            <AlertDescription className="text-destructive-dark">
-              {notification.message}
-            </AlertDescription>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute top-2 right-2"
-              onClick={dismiss}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </Alert>
-        )}
-
-        {/* Entity Type Selector */}
-        <UserPostSelector selected={entityType} onSelect={setEntityType} />
-
-        {/* Statistics */}
-        <StatisticsCards stats={stats} />
-
-        {/* Create Button */}
-        <div className="flex justify-end mb-4">
-          <Button
-            onClick={
-              entityType === 'user'
-                ? createUserModal.open
-                : createPostModal.open
-            }
-          >
-            새로 만들기
-          </Button>
+    <div className="min-h-screen bg-[#f0f0f0] dark:bg-background">
+      <div className="max-w-[1200px] mx-auto p-5">
+        {/* 제목 부분 - 흰색 컨테이너 밖 */}
+        <div className="mb-5">
+          <h1 className="text-2xl font-bold mb-[5px] text-foreground">
+            관리 시스템
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            사용자와 게시글을 관리하세요
+          </p>
         </div>
 
-        {/* Table */}
-        {entityType === 'user' ? (
-          <UserTable
-            users={data as User[]}
-            isLoading={isLoading}
-            onEdit={handleEditUser}
-            onDelete={handleDeleteUser}
-          />
-        ) : (
-          <PostTable
-            posts={data as Post[]}
-            isLoading={isLoading}
-            onEdit={handleEditPost}
-            onDelete={handleDeletePost}
-            onPublish={handlePublish}
-            onArchive={handleArchive}
-            onRestore={handleRestore}
-          />
-        )}
+        {/* 흰색 컨테이너 */}
+        <div className="bg-card border border-border p-2.5">
+          {/* Entity Type Selector */}
+          <UserPostSelector selected={entityType} onSelect={setEntityType} />
+
+          {/* Create Button */}
+          <div className="flex justify-end mb-4">
+            <Button
+              onClick={
+                entityType === 'user'
+                  ? createUserModal.open
+                  : createPostModal.open
+              }
+            >
+              새로 만들기
+            </Button>
+          </div>
+
+          {/* Notifications */}
+          {notification.type === 'success' && (
+            <Alert className="mb-4 bg-success-light border-success">
+              <CheckCircle2 className="h-4 w-4 text-success" />
+              <AlertTitle className="text-success">성공</AlertTitle>
+              <AlertDescription className="text-success-dark">
+                {notification.message}
+              </AlertDescription>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute top-2 right-2"
+                onClick={dismiss}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </Alert>
+          )}
+
+          {notification.type === 'error' && (
+            <Alert className="mb-4 bg-destructive-light border-destructive">
+              <AlertCircle className="h-4 w-4 text-destructive" />
+              <AlertTitle className="text-destructive">오류</AlertTitle>
+              <AlertDescription className="text-destructive-dark">
+                {notification.message}
+              </AlertDescription>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute top-2 right-2"
+                onClick={dismiss}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </Alert>
+          )}
+
+          {/* Statistics */}
+          <StatisticsCards stats={stats} />
+
+          {/* Table */}
+          {entityType === 'user' ? (
+            <UserTable
+              users={data as User[]}
+              isLoading={isLoading}
+              onEdit={handleEditUser}
+              onDelete={handleDeleteUser}
+            />
+          ) : (
+            <PostTable
+              posts={data as Post[]}
+              isLoading={isLoading}
+              onEdit={handleEditPost}
+              onDelete={handleDeletePost}
+              onPublish={handlePublish}
+              onArchive={handleArchive}
+              onRestore={handleRestore}
+            />
+          )}
+        </div>
+
+        {/* Modals */}
+        <CreateUserModal
+          isOpen={createUserModal.isOpen}
+          onClose={createUserModal.close}
+          onSubmit={handleCreateUser}
+        />
+
+        <CreatePostModal
+          isOpen={createPostModal.isOpen}
+          onClose={createPostModal.close}
+          onSubmit={handleCreatePost}
+        />
+
+        <EditUserModal
+          isOpen={editUserModal.isOpen}
+          onClose={editUserModal.close}
+          onSubmit={handleUpdateUser}
+          user={selectedUser}
+        />
+
+        <EditPostModal
+          isOpen={editPostModal.isOpen}
+          onClose={editPostModal.close}
+          onSubmit={handleUpdatePost}
+          post={selectedPost}
+        />
       </div>
-
-      {/* Modals */}
-      <CreateUserModal
-        isOpen={createUserModal.isOpen}
-        onClose={createUserModal.close}
-        onSubmit={handleCreateUser}
-      />
-
-      <CreatePostModal
-        isOpen={createPostModal.isOpen}
-        onClose={createPostModal.close}
-        onSubmit={handleCreatePost}
-      />
-
-      <EditUserModal
-        isOpen={editUserModal.isOpen}
-        onClose={editUserModal.close}
-        onSubmit={handleUpdateUser}
-        user={selectedUser}
-      />
-
-      <EditPostModal
-        isOpen={editPostModal.isOpen}
-        onClose={editPostModal.close}
-        onSubmit={handleUpdatePost}
-        post={selectedPost}
-      />
     </div>
   );
 };

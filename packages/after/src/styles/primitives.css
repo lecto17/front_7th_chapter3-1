@@ -1,60 +1,121 @@
 :root {
   /* ========================================
-     COLOR PALETTE
+     TIER 1: VALUES (Primitive Tokens)
+     Raw color values - the foundation
      ======================================== */
 
-  /* Blue */
-  --blue-50: #e3f2fd;
-  --blue-200: #90caf9;
-  --blue-600: #1976d2;
-  --blue-700: #1565c0;
-  --blue-900: #0d47a1;
+  /* Blue Values */
+  --value-blue-50: #e3f2fd;
+  --value-blue-200: #90caf9;
+  --value-blue-600: #1976d2;
+  --value-blue-700: #1565c0;
+  --value-blue-900: #0d47a1;
 
-  /* Green */
-  --green-50: #e8f5e9;
-  --green-200: #81c784;
-  --green-600: #388e3c;
-  --green-700: #2e7d32;
-  --green-900: #1b5e20;
+  /* Green Values */
+  --value-green-50: #e8f5e9;
+  --value-green-200: #81c784;
+  --value-green-600: #388e3c;
+  --value-green-700: #2e7d32;
+  --value-green-900: #1b5e20;
 
-  /* Red */
-  --red-50: #ffebee;
-  --red-200: #e57373;
-  --red-600: #d32f2f;
-  --red-700: #c62828;
-  --red-900: #b71c1c;
+  /* Red Values */
+  --value-red-50: #ffebee;
+  --value-red-200: #e57373;
+  --value-red-600: #d32f2f;
+  --value-red-700: #c62828;
+  --value-red-900: #b71c1c;
 
-  /* Orange */
-  --orange-50: #fff3e0;
-  --orange-200: #ffb74d;
-  --orange-600: #f57c00;
-  --orange-900: #e65100;
+  /* Orange Values */
+  --value-orange-50: #fff3e0;
+  --value-orange-200: #ffb74d;
+  --value-orange-600: #f57c00;
+  --value-orange-900: #e65100;
 
-  /* Cyan */
-  --cyan-600: #0288d1;
+  /* Cyan Values */
+  --value-cyan-600: #0288d1;
 
-  /* Gray */
-  --gray-50: #fafafa;
-  --gray-100: #f5f5f5;
-  --gray-200: #e0e0e0;
-  --gray-300: #ccc;
-  --gray-400: #bdbdbd;
-  --gray-500: #757575;
-  --gray-600: #666;
-  --gray-700: #424242;
-  --gray-800: #333;
-  --gray-900: #121212;
+  /* Gray Values */
+  --value-gray-50: #f7fafc;
+  --value-gray-100: #f5f5f5;
+  --value-gray-200: #e0e0e0;
+  --value-gray-300: #ccc;
+  --value-gray-400: #bdbdbd;
+  --value-gray-500: #757575;
+  --value-gray-600: #666;
+  --value-gray-700: #424242;
+  --value-gray-800: #333;
+  --value-gray-900: #121212;
 
-  --white: #ffffff;
-  --black: #000000;
+  /* Cool Gray Values (Legacy) */
+  --value-cool-gray-500: #718096;
+  --value-cool-gray-900: #1a202c;
+
+  /* Base Values */
+  --value-white: #ffffff;
+  --value-black: #000000;
+
+  /* ========================================
+     TIER 2: BASE VARIABLES (Semantic Tokens)
+     Named colors that reference primitive values
+     ======================================== */
+
+  /* Blue Scale */
+  --blue-50: var(--value-blue-50);
+  --blue-200: var(--value-blue-200);
+  --blue-600: var(--value-blue-600);
+  --blue-700: var(--value-blue-700);
+  --blue-900: var(--value-blue-900);
+
+  /* Green Scale */
+  --green-50: var(--value-green-50);
+  --green-200: var(--value-green-200);
+  --green-600: var(--value-green-600);
+  --green-700: var(--value-green-700);
+  --green-900: var(--value-green-900);
+
+  /* Red Scale */
+  --red-50: var(--value-red-50);
+  --red-200: var(--value-red-200);
+  --red-600: var(--value-red-600);
+  --red-700: var(--value-red-700);
+  --red-900: var(--value-red-900);
+
+  /* Orange Scale */
+  --orange-50: var(--value-orange-50);
+  --orange-200: var(--value-orange-200);
+  --orange-600: var(--value-orange-600);
+  --orange-900: var(--value-orange-900);
+
+  /* Cyan Scale */
+  --cyan-600: var(--value-cyan-600);
+
+  /* Gray Scale */
+  --gray-50: var(--value-gray-50);
+  --gray-100: var(--value-gray-100);
+  --gray-200: var(--value-gray-200);
+  --gray-300: var(--value-gray-300);
+  --gray-400: var(--value-gray-400);
+  --gray-500: var(--value-gray-500);
+  --gray-600: var(--value-gray-600);
+  --gray-700: var(--value-gray-700);
+  --gray-800: var(--value-gray-800);
+  --gray-900: var(--value-gray-900);
+
+  /* Cool Gray (Legacy) */
+  --cool-gray-500: var(--value-cool-gray-500);
+  --cool-gray-900: var(--value-cool-gray-900);
+
+  /* Base Colors */
+  --white: var(--value-white);
+  --black: var(--value-black);
 
   /* ========================================
      TYPOGRAPHY
      ======================================== */
 
   /* Font Family */
-  --font-sans: "Roboto", "Helvetica", "Arial", sans-serif;
-  --font-mono: "Courier New", monospace;
+  --font-sans: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  --font-mono: 'Courier New', monospace;
 
   /* Font Size - px values from before package */
   --font-size-xs: 0.625rem; /* 10px - checkbox checkmark */
